@@ -1,7 +1,7 @@
 //A basic approach//
 /*
 import mongoose from 'mongoose';
-import {DB_NAME} from "./constants";
+import {DB_NAME} from "./constants.js";
 import express from "express";
 const app = express()
 
@@ -29,8 +29,8 @@ const app = express()
 
 // professional approach for connection to mongodb //
 
-import dotenv from 'dotenv';
-import connectionDB from "./db/index.js";
+import dotenv from 'dotenv'
+import connectionDB from "./db/dbserver.js";
 
 dotenv.config({
     path: `./env`
