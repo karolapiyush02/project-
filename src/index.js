@@ -29,6 +29,10 @@ const app = express()
 
 // professional approach for connection to mongodb //
 
+//you can use different files to connect connection in mongodb, first-rwrite your code in db_folder/dbserver.js_file and then execute it in the main index. js_file//
+
+//through this method you code will be clean and easy to understand //
+
 import dotenv from 'dotenv'
 import connectionDB from "./db/dbserver.js";
 
