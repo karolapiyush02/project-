@@ -40,4 +40,17 @@ dotenv.config({
     path: `./env`
 })
 
-connectionDB();
+connectionDB()
+.then(
+  app.on("error", (error)=>{
+    console.log("error:", error)
+    throw error
+    })
+
+    app.listen(process.env.PORT,()=>{
+      console.log("app running on port ${process.emv.PORT}")
+    })
+)
+/*.catch(error) {
+  console.log('error')
+}*/
