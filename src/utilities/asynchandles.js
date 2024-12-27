@@ -19,7 +19,7 @@
 };*/
 
 //2nd process for connection through promises.
-
+/*
 const asynchandles = (fn) =>{
     (req, res, next) =>{
         Promise.resolve(fn(req, res, next))
@@ -27,4 +27,4 @@ const asynchandles = (fn) =>{
     )
         
     }
-};
+};*/
