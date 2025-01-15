@@ -49,13 +49,13 @@ const UserSchema = new Schema(
       Timestamps: true
     },
 )
-
+//middleware to check if the password is changes or not//
 UserSchema.pre("save", async function(next){
   if(!this.isModified("password")) return next();
   this.password = bcrypt.hash(this.password, 10)
   next()
 })
- 
+ // if password is correct //
 UserSchema.methods.isPasswordCorrect = async function(password){
  return  await bcrypt.compare(password, this.password)
 }

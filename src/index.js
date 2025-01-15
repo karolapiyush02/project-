@@ -20,8 +20,8 @@ app.use(express.json());
 
       })
     } catch (error) {
-        console.log("error:", error)
-        throw error
+        console.log("MONGODB CONNECTION FAILED !!", error)
+        
     }
     }
 )()
