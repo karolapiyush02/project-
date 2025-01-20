@@ -10,7 +10,7 @@ api_Secret:process.env.Cloudinary_Apisecret
 });
 
 //
-comst uploadoloudinary = async function(localpath) => {
+const uploadoloudinary = async function(localpath) => {
     try {
         if(!localpath) return null
         // NOw to upload the file on cloudinary//
