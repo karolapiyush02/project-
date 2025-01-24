@@ -23,15 +23,14 @@ app.use(cookieParser())
 //to give a random name to your
 //import you have to `export default` for it//
 
-import userRouter from "./routes/user.routes.js"
+import userRouter from "../routes/user.routes.js"
 
 // when ever we declair our routes we practice 
 //this type of configration
 //where routes are in different folder
 
-app.use("/api/v2/users", userRouter)
+app.use("/api/v1/users", userRouter)
 
-//http://localhoast:8000/api/v1/users/register
+//http://localhost:5000/api/v1/users/register
 
-
-export app;
+export  default app

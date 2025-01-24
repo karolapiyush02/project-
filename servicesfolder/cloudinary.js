@@ -9,8 +9,7 @@ api_Key:process.env.Cloudinary_Apikey,
 api_Secret:process.env.Cloudinary_Apisecret
 });
 
-//
-const uploadoloudinary = async (localfilepath) => {
+const uploadoncloudinary = async (localfilepath) => {
     try {
         if(!localpath) return null
         // NOw to upload the file on cloudinary//
@@ -31,4 +30,4 @@ const uploadoloudinary = async (localfilepath) => {
 }
 
 
-export {uploadoloudinary}
+export {uploadoncloudinary}

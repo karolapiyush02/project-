@@ -16,7 +16,7 @@ app.use(express.json());
       })
 
       app.listen(process.env.PORT, () => {
-        console.log(`app is listening on PORT 8000 ${process.env.PORT}`);
+        console.log(`app is listining on PORT ${process.env.PORT}`);
 
       })
     } catch (error) {
