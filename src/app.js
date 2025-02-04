@@ -3,7 +3,9 @@ import cors from "cors"
 import cookieParser from "cookie-parser"
 
 
+
 const app = express()
+
 
 
 app.use(cors({
@@ -19,18 +21,19 @@ app.use(express.urlencoded({extended: true, limit: "16kb"}))
 app.use(express.static("public"))
 app.use(cookieParser())
 
-//import routes inbetween
-//to give a random name to your
-//import you have to `export default` for it//
+//routes inbetween 
+//note:- this userRouter is randome name for import
+//you have to export default to give randome name
+import  routerInstance  from "../src/routes/user.routes.js";
 
-import userRouter from "../routes/user.routes.js"
 
-// when ever we declair our routes we practice 
-//this type of configration
-//where routes are in different folder
+//routes declaration
 
-app.use("/api/v1/users", userRouter)
 
-//http://localhost:5000/api/v1/users/register
+/*this function will move backwords*/ 
 
-export  default app
+app.use("/api/v1/users", routerInstance )
+
+export {app} 
+
+/*app.js(api/v1/users)->userRouter(/register)->RegisterUser-> resonse(200,ok)*/
