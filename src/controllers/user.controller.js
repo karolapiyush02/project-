@@ -1,14 +1,47 @@
+//imports
 import { asyncHandler } from "../utils/asyncHandler.js"
+import  ApiError from "../utils/ApiError.js"
+import {User} from "../models/user.models.js"
+import {uploadoncloudinary} from "../utils/cloudinary.js"
 
-//make a const name registerUser
 
-const registerUser = asyncHandler( async ( req, res ) => {
-  
-  res.status(200).json({
-    message: "ok"
-  })
+// logic building operations 
+//userdetails from frontend:
+const registerUser = asyncHandler( async ( req, res ) => {  
+  const { fullname, email, username, password} = req.body;
+    console.log("fullname:", fullname, "email:", email,
+     "username:", username, "password:", password); //check the user details
+//check if the user has entered all the details
+//user trim to genuinely check for right details
+ if(!fullname.trim() || !email.trim()  || !username.trim()  || !password.trim() ) {
+  throw new 
+        ApiError(400, "Please fill all the fields");
+ }   
+//to check user is existing or not
+
+const existerUser = User.findOne({
+  $or: [{ email: email }, { username: username }],
+ })
+if(existerUser) {
+  throw new 
+        ApiError(400, "User already exists"); 
+ }
+//check for avatar and coverimage
+ const avatarlocalpath = req.files?.avatar[0]?.path;
+ const coverimagelocalpath = req.files?.coverimage[0]?.path;
+//images can be available or not
+if(!avatarlocalpath){
+  throw new 
+        ApiError(400, "Please upload an avatar image");
+} 
+//uploadoncloudinary
+const avatar = await uploadoncloudinary(avatarlocalpath);
+const coverimage = await uploadoncloudinary(coverimagelocalpath);
+//if not uploaded on cloudinary
+if(!avatar){
+  throw new 
+        ApiError(500, "Image upload failed");
+}
+
 })
-
-
-//export this function and use it in user.routes.js
 export { registerUser }
