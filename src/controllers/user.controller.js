@@ -43,5 +43,9 @@ if(!avatar){
         ApiError(500, "Image upload failed");
 }
 
+//register user in database 
+//check if the user is registered in database
+
 })
 export { registerUser }
+
