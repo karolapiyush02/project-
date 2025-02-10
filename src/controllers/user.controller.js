@@ -73,29 +73,9 @@ if(!avatar){
         ApiError(500, "Image upload failed");
 }
 
-//user entry in databse 
-const enterUser = await User.create({
-  fullname,
-  username:username.tolowercase(),
-  avatar: avatar.url,
-  coverimage: coverimage?.url || "",
-  email,
-  password,
-})
-
-//check if user is created in databse:-
- const createdUser = await username.findbyId(enterUser._id)
- .select("-password -refreshtoken")
-
- if(!createdUser){
-   throw new 
-        ApiError(500, "something went wrong whie creating the user");
- }
-
- //send response 
- return res.status(201).json(
-  new ApiResponse(200, createdUser, "User created successfully" )
- )
+//register user in database 
+//check if the user is registered in database
 
 })
 export { registerUser }
+
