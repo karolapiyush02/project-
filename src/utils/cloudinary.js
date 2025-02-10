@@ -1,33 +1,56 @@
 import {v2 as cloudinary} from "cloudinary";
-import {fs} from "fs";
+import fs from "fs";
 
 //Now we have to configrate cloudinary//
 
 cloudinary.config({
-cloud_Name:process.env.Cloudinary_CloudName,
-api_Key:process.env.Cloudinary_Apikey,
-api_Secret:process.env.Cloudinary_Apisecret
+cloud_Name:process.env.CLOUDINARY_CLOUD_NAME,
+api_Key:process.env.CLOUDINARY_API_KEY,
+api_Secret:process.env.CLOUDINARY_API_SECRET
 });
+
+console.log(cloudinary.config());
+
+
+
 
 const uploadoncloudinary = async (localfilepath) => {
     try {
-        if(!localpath) return null
-        // NOw to upload the file on cloudinary//
+             //check if the file exist or not
+        if(!localfilepath || !fs.existsSync(localfilepath))
+            {
+                console.log("file not found", localfilepath);
+                return null;
+            }
+            console.log("uploading file", localfilepath);
+
+              //upload on cloudinary
         const response = await cloudinary.uploader.upload(localfilepath, {
             resource_type: "auto"
-        })
-        //file has been uploades successfully
-        console.log("file is uploaded on cloudinary", response.url);
-        return response
-    } catch (error) {
-        //what is the file is not uploaded on the services server 
-        // so we have to unlink the file from our server
-        //for safe cleaning perpose
+        });
 
-        fs.unlinkSync(localfilepath)// remove the locl saved temp file 
-        return null;
+             //file has been uploades successfully
+        console.log("file is uploaded on cloudinary", response.url);
+        //response 
+        return response
+    
+    } catch (error) {
+        console.log("error in uploading file on cloudinary", error.message);
+
+        //ensure safe deletion of temp file if exists 
+        if(
+            fs.existsSync(localfilepath)
+        ){
+            fs.unlinkSync(localfilepath);
+        }{
+            return null;
+        }
+    };
+      
+        /*fs.unlinkSync(localfilepath)// remove the locl saved temp file 
+        return null;*/
     }
-}
+
 
 
 export default uploadoncloudinary;

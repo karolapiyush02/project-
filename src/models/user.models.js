@@ -1,4 +1,4 @@
-import mongoose, {Schema}  from mongoose;
+import mongoose, {Schema}  from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
@@ -33,16 +33,18 @@ const UserSchema = new Schema(
       coverimage:{
         type: String, //clouding url,
       },
-      watchhistory:{
-        type: Schema.type.objectID,
+      watchhistory:[
+        {
+        type: Schema.Types.ObjectId,
         Ref: "Video" 
-      },
-      password:{
-        type:String,
-        required: [True, 'password is required']
+        }
+      ],
+      password: {
+        type: String,
+        required: [true, 'password is required']
       },
       refreshtoken:{
-        type: string
+        type: String
       }
     },
     {

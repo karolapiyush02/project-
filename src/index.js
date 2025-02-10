@@ -1,8 +1,12 @@
 //A basic approach//
+//imports
 import mongoose from 'mongoose';
 import {DB_NAME} from "./constants.js";
-import express from "express";
 import { app } from "../src/app.js";
+
+console.log("environment variable loaded successfully");;
+
+
 
 
 
