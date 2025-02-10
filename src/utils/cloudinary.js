@@ -1,15 +1,20 @@
 import {v2 as cloudinary} from "cloudinary";
 import fs from "fs";
+import dotenv from "dotenv";
+dotenv.config();
+
 
 //Now we have to configrate cloudinary//
 
 cloudinary.config({
-cloud_Name:process.env.CLOUDINARY_CLOUD_NAME,
-api_Key:process.env.CLOUDINARY_API_KEY,
-api_Secret:process.env.CLOUDINARY_API_SECRET
+cloud_name: process.env.CLOUDINARY_CLOUD_NAME, // cloud name phele hi set ho kr ata h  
+   api_key: process.env.CLOUDINARY_API_KEY,
+api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-console.log(cloudinary.config());
+console.log("api key:", process.env.CLOUDINARY_API_KEY);
+console.log("api secret:", process.env.CLOUDINARY_API_SECRET);
+console.log("cloud name:", process.env.CLOUDINARY_CLOUD_NAME);  
 
 
 
@@ -47,10 +52,11 @@ const uploadoncloudinary = async (localfilepath) => {
         }
     };
       
-        /*fs.unlinkSync(localfilepath)// remove the locl saved temp file 
-        return null;*/
-    }
+       
+    
+
+};
 
 
-
+    
 export default uploadoncloudinary;

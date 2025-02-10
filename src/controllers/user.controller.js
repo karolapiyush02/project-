@@ -59,9 +59,6 @@ if(!avatarlocalpath){
         ApiError(400, "Please upload an avatar image");
 } 
 
-//using cloudinary config
-console.log("using cloudinary config:", cloudinary.config());
-console.log("cloudinary module:", cloudinary);
 
 
 //uploadoncloudinary
@@ -73,8 +70,10 @@ if(!avatar){
         ApiError(500, "Image upload failed");
 }
 
-//register user in database 
-//check if the user is registered in database
+// if everything is ok, then create a new user
+
+
+
 
 })
 export { registerUser }
