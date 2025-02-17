@@ -5,38 +5,24 @@ import { User } from "../models/user.models.js"
 import uploadoncloudinary from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 
-/*
-const registerUser = asyncHandler( async ( req, res ) => {  
-  res.status(200).json({  
-    message: "ok"  
-  })
-})*/
-
-// seperate method to generate tokens
- const generateAccessandRefreshtokens = async (userId) => {
+//seperate code for token generation 
+const generateaccessandrefreshtokens = async(userid) =>{
   try {
-    //find user in mongoose User with its id
-    const user = await User.findById(userId)
-    const accesstoken = user.generateAccessToken()//AccessToken 
-    const refreshtoken =  user.generateRefreshToken()//RefreshToken
-    
-    //save refreshtoken for self store
-    user.refreshtoken = refreshtoken
-    await user.save({ValidateBeforeSave: false})
-    
-    //return
-    return {accesstoken, refreshtoken};
-  }
-   catch (error) {
-    throw new 
-           ApiError(500, "Something went wrong, while generating tokens for user.")
+  const user = await User.findById(userid)
+  const accesstoken = user.generateAccessToken()
+  const refreshtoken = user.generateRefreshToken()
+
+  user.refreshToken = refreshtoken;
+  user.save({validateBeforeSave: false})
+  return {accesstoken, refreshtoken};
+  } catch (error) {
+    throw new ApiError(500, "something went wrong while generating tokens for user.")
   }
 }
-
-console.log("generateAccessandRefreshtokens:", generateAccessandRefreshtokens);
+console.log("generation of tokens is completed:", generateaccessandrefreshtokens);
+console.log("user object details:", User);
 
 // logic building operations 
-// userdetails from frontend:
 const registerUser = asyncHandler( async ( req, res ) => {  
   const { fullname, email, username, password} = req.body;
     console.log("fullname:", fullname, "email:", email,
@@ -101,7 +87,7 @@ if(!avatar){
 })
 
 //remove users password and refreash token from response
-const usercheck =  await  User.findById(createUser._id).select("-password -refreshtoken"); // yeh code thoda time lega to await lgai
+const usercheck =  await  User.findById(createUser._id).select("-password -refreshToken"); // yeh code thoda time lega to await lgai
 console.log("user found:", usercheck);
 
 //check if user already exists or not
@@ -117,68 +103,54 @@ return res.status(201).json(
 ));
 });
 
-//login user
-const loginUser = asyncHandler(async (req, res) => {
-  //get user details 
-  const {email, username, password} = req.body;
-
-  //check if user has enter all details right
-  if(!email.trim() || !username.trim()){
-    throw new 
-          ApiError(400, "please enter the email or username to login");
-  }
-  //find the user in mongoose database
-  const user = await User.findOne({ 
-    $or: [{ email: email}, {username: username}]
-  })
-  if (!user) {
-    throw new 
-          ApiError(404, "User not found, please register first");
-  }
-  //is password correct
-  const passwordvalidate = User.isPasswordCorrect(password);//this (password) is from req.body, User from  models file.
-
-  if(!passwordvalidate){
-    throw new 
-          ApiError(400, "password is incorrect, please enter the correct password");
-  }
-  //generate access and refresh token
-  //call the above method in the login system
-  const {accesstoken, refreshtoken} = await generateAccessandRefreshtokens(user._id);
+const loginUser = asyncHandler( async (req, res) => {
   
-  const loggedinuser = await User.findById(user._id)
-  .select("-password  -refreshtoken")
+ const {email, username, password} = req.body;
 
-  console.log("loggedinuser:", loggedinuser);
+ if(!email && !username){
+  throw new ApiError(400, "please enter email or username to login.");
+ }
+  const user = await User.findOne({
+  $or: [{email}, {username}]
+ })
+ if(!user){
+  throw new ApiError(401, "user does not exist please register first.");
+ }
+ const correctpassword = await user.isPasswordCorrect(password)// password which we get from user
+ if(!correctpassword){
+  throw new ApiError(402, "password is incorrect, please try again.");
+ }
+ 
+ const {accesstoken, refreshtoken} = await generateaccessandrefreshtokens(user._id)
+ console.log("Access Token:", accesstoken);
+ console.log("Refresh Token:", refreshtoken);
 
-  //send cookies
-  const options = {
-    httponly: true,
-    source: true
-  }
+ const login = await User.findById(user._id)
+ .select("-password -refreshToken");
+console.log("login details of user:", login);
 
-  //response
-  return res
-  .status(200)
-  .cookie("accesstoken:", accesstoken, options)
-  .cookie("refreshtoken:", refreshtoken, options)
-  .json( 
-    new ApiResponse(
-      200, {user: loggedinuser, accesstoken, refreshtoken},
-      "user logged in successfully" // for user development perpose
-    )
-  )
-}); 
+const options = {
+  httpOnly: true, 
+  secure: true,
+}
+console.log("options:", options)
 
-//logout user
-const logoutUser = asyncHandler(async (req, res) => {
+ res.status(200)
+.cookie(  accesstoken, options)  
+.cookie( refreshtoken, options)
+.json(
+new ApiResponse(200, {user: login, accesstoken, refreshtoken}, "user is logged in successfully")
+)
+ 
+});
 
-})
+const logoutUser = asyncHandler(async( req, res) => {
+
+});
 
 export {
 
   registerUser,
   loginUser,
-  logoutUser,
+  
 }
-

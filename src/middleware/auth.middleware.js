@@ -1,44 +1,27 @@
-import { ApiError } from "../error/ApiError.js";
-import { asyncHandler } from "../utils/asyncHandler.js";
+import ApiError from "../utils/ApiError.js" 
+import {asyncHandler} from "../utils/asyncHandler.js"
 import jwt from "jsonwebtoken";
-import { User } from "../models/user.models.js";
 
 
 
-  const verifyJWt = asyncHandler( async (req, res, next) => {
-      //verify token came from user 
+export const verifyJWT = asyncHandler (async(req, res, next)=>{
   try {
-    const token = req.cookies?.accesstoken || 
-    req.header ("Authorization")?.replace("Bearer ", "")// " " users acces token.
-        //check token is  not avilable 
+    const token = req.cookie?.accesstoken || 
+    req.header("Authorisation")?.replace("bearer ", "")
     if(!token){
-      throw new 
-           ApiError( 401, "Unauthorised request")
-    }  
-       //if token is avilable
-    const decodedtoken = await jwt.verify(token, process.env.Access_Token_Secret)//compairing token with secret key 
-       //  await?    
-    
-      //delete password and refreshtoken from decodedtoken
-      const user = await user.findById(decodedtoken?._id).select("-password -refreshtoken")     
-      console.log("decodedtoken:", decodedtoken);
-      console.log("user:", user);
-  
-      //if user is not avilable
-      //discussion with team frontend
-      if(!User){
-          throw new 
-               ApiError(404, "invalid access token, user not found")
-      }
-      
-      req.user = user;
-      next()
+      throw new ApiError(401, "unauthorized requiest");
+    }
+    const decodedtoken = await jwt.varify(token, process.env.ACCESS_TOKEN_SECRET)
+    const user = await User.findbyId(decodedtoken?._id).select
+    ("-password -refreshtoken")
+    console.log("decodedtoken details:", decodedtoken);
+    if(!user){
+      throw new ApiError(420, "invalid token.");
+    }
+    req.user = user;
+    next()
   } catch (error) {
-    throw new 
-         ApiError(401, error?.message || "invalid access token")
+    throw new ApiError(402, error.message || "inavlid access token");
   }
-
-
 })
 
-export { verifyJWt } 
