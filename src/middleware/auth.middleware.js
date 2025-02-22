@@ -1,27 +1,47 @@
-import ApiError from "../utils/ApiError.js" 
-import {asyncHandler} from "../utils/asyncHandler.js"
+import  {User}  from "../models/user.models.js";
+import ApiError from "../utils/ApiError.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 import jwt from "jsonwebtoken";
 
 
-
-export const verifyJWT = asyncHandler (async(req, res, next)=>{
+const verifyJWT = asyncHandler(async (req, _, next) => {
   try {
-    const token = req.cookie?.accesstoken || 
-    req.header("Authorisation")?.replace("bearer ", "")
+    const token = req.cookies?.accesstoken || req.header
+    ("Authorization")?.replace("Bearer ", "")
+    
+    //console
+    
+    console.log("cookies:", req.cookies)//defined
+    console.log("cookies_object_type:", typeof req.cookies);//defined
+    console.log("available_keys", Object.keys(req.cookies));//defined
+    console.log("complete_cookies_data:", req.cookies);//defined
+
+    console.log("Access Token from Cookies:", req.cookies?.accesstoken)//defined
+    console.log("Authorization Header:", req.header("Authorization"))//undefined as predicted
+    console.log("token recieved:", token)//defined
+    
+    
+    
+    
     if(!token){
-      throw new ApiError(401, "unauthorized requiest");
+      throw new ApiError(401, "unauthorized requiest")
     }
-    const decodedtoken = await jwt.varify(token, process.env.ACCESS_TOKEN_SECRET)
-    const user = await User.findbyId(decodedtoken?._id).select
-    ("-password -refreshtoken")
-    console.log("decodedtoken details:", decodedtoken);
+  
+     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
+     console.log("decoded ID:", decoded)
+  
+    const user = await User.findById(decoded?._id).select("-password -refreshToken")
+
     if(!user){
-      throw new ApiError(420, "invalid token.");
+      //discussion about frontend
+      throw new ApiError(401, "invalid access token")
     }
     req.user = user;
     next()
   } catch (error) {
-    throw new ApiError(402, error.message || "inavlid access token");
+   throw new ApiError(401, "invalid!!!!!") 
   }
-})
 
+});
+
+export default verifyJWT;

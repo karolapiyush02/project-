@@ -10,7 +10,7 @@ const app = express()
 
 app.use(cors({
     origin: process.env.Cors_Origin,
-    credientials: true
+    credientials: true,
 }))
 
 // more settings for backend to communicate with frountend data
