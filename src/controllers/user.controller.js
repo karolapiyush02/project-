@@ -219,10 +219,135 @@ const logoutUser = asyncHandler(async( req, res) => {
 
 });
 
+const changepassword = asyncHandler(async(req, res) => {
+
+const {currentpassword, newpassword, confermpassword} = req.body;
+
+console.log("Fields in request.Body are bellow:", req.body);//check
+
+const user = await User.findById(req.user?.id)
+console.log("password changer user details:", user)
+
+const correctpassword = await user.isPasswordCorrect(currentpassword);
+//compairing both the passwords in user and give
+console.log("the value of correct password:", correctpassword)
+
+if(!correctpassword){
+  throw new ApiError(400,
+    "the password user enter is incorrect, please enter correct password to make changes."
+  )
+};
+
+if(newpassword !== confermpassword){
+  throw new ApiError(400, "password does not match to change, changes denied.")
+}
+
+user.password = new password;
+await user.save({validateBeforeSave: false})
+
+});
+
+const gettinguser = asyncHandler(async(req, res) => {
+   
+  return res
+  .status(200)
+  .json(200, req.user, "current user details are here.")
+
+});
+
+const updatinguserdetails = asyncHandler(async( req, res ) => {
+
+const {fullname , email} = req.body;
+console.log("provided details by user for update:", req.body);
+
+if(!fullname || !email){
+  throw new ApiError(400, "please provide details for updating the details for user.")
+}
+
+const user = User.findByIdAndUpdate(
+  req.user?._id,
+  {
+    $set: {
+      fullname,
+      email: email,
+    }
+  },
+  {new: true}
+).select("-password")//like a new user delete password 
+//console
+console.log("details of user:", user)
+
+return res
+.status(200)
+.json(new ApiResponse(201, "New details are updated for user."))
+});
+
+const updateavatar = asyncHandler(async(req, res) => {
+  
+  const avatarlocalpath = req.file?.path
+  //check
+  console.log("avatar image path is given by the user:", req.file.path);
+
+  if(!avatarlocalpath.url){
+    throw new ApiError(400, "user must provide new avatar to change it")
+  }
+  console.log("url of avatar image:", avatarlocalpath.url)//check
+  console.log("user Id:", req.user?._id)//check
+  
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+   
+    {
+      $set: {
+        avatar: avatarlocalpath.url
+      }
+    },
+    {
+      new: true,
+    }
+  ).select("-password")
+  console.log("user details with  new avatar.url update:", user)
+
+});
+
+const updatecoverimage = asynchandler(async( req, res) => {
+
+  const coverimagelocalpath = req.file?.path
+  //check
+  console.log("coverimage path is given by the user:", req.file.path);
+
+  if(!coverimagelocalpath.url){
+    throw new ApiError(400, "user must provide new coverimage to change it")
+  }
+  console.log("url of avatar image:", coverimagelocalpath.url)//check
+  console.log("user Id:", req.user?._id)//check
+  
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+   
+    {
+      $set: {
+        coverimage: coverimagelocalpath.url
+      }
+    },
+    {
+      new: true,
+    }
+  ).select("-password")
+  console.log("user details with  new coverimage.url  update:", user)
+
+});
+
+
+
 export {
 
   registerUser,
   loginUser,
-  logoutUser
-  
+  logoutUser,
+  changepassword,
+  gettinguser,
+  updatinguserdetails,
+  updateavatar,
+  updatecoverimage,
 }

@@ -31,6 +31,7 @@ const verifyJWT = asyncHandler(async (req, _, next) => {
      console.log("decoded ID:", decoded)
   
     const user = await User.findById(decoded?._id).select("-password -refreshToken")
+    console.log("final user details:", user)
 
     if(!user){
       //discussion about frontend
