@@ -310,7 +310,7 @@ const updateavatar = asyncHandler(async(req, res) => {
 
 });
 
-const updatecoverimage = asynchandler(async( req, res) => {
+const updatecoverimage = asyncHandler(async( req, res) => {
 
   const coverimagelocalpath = req.file?.path
   //check
