@@ -10,12 +10,7 @@ const verifyJWT = asyncHandler(async (req, _, next) => {
     ("Authorization")?.replace("Bearer ", "")
     
     //console
-    
     console.log("cookies:", req.cookies)//defined
-    console.log("cookies_object_type:", typeof req.cookies);//defined
-    console.log("available_keys", Object.keys(req.cookies));//defined
-    console.log("complete_cookies_data:", req.cookies);//defined
-
     console.log("Access Token from Cookies:", req.cookies?.accesstoken)//defined
     console.log("Authorization Header:", req.header("Authorization"))//undefined as predicted
     console.log("token recieved:", token)//defined

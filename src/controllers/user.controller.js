@@ -223,42 +223,56 @@ const changepassword = asyncHandler(async(req, res) => {
 
 const {currentpassword, newpassword, confermpassword} = req.body;
 
-console.log("Fields in request.Body are bellow:", req.body);//check
+console.log("Fields in request.Body are bellow:", req.body);//done 
 
 const user = await User.findById(req.user?.id)
-console.log("password changer user details:", user)
+console.log("password changer user details:", user)//done 
 
 const correctpassword = await user.isPasswordCorrect(currentpassword);
-//compairing both the passwords in user and give
-console.log("the value of correct password:", correctpassword)
+//compairing both the passwords in user and given
+console.log("the value of correct password:", correctpassword)//done
 
 if(!correctpassword){
   throw new ApiError(400,
     "the password user enter is incorrect, please enter correct password to make changes."
   )
-};
-
-if(newpassword !== confermpassword){
-  throw new ApiError(400, "password does not match to change, changes denied.")
 }
 
-user.password = new password;
-await user.save({validateBeforeSave: false})
+if(newpassword !== confermpassword){
+  throw new ApiError(400, "password does not match to change, changes denied.")//done
+}
+
+try {
+  const changedpassword =  
+  user.password = newpassword
+  await user.save({validateBeforeSave: false})
+  
+  console.log("the password is changed successfully:", changedpassword)
+} catch (error) {
+  throw new ApiError(500, "something went wrong while changing the password.")
+}
+
+return res
+.status(200)
+.json(new ApiResponse(200, {}, "password is changed successfully."))
 
 });
 
 const gettinguser = asyncHandler(async(req, res) => {
    
+  console.log("current user details are here:", req.user)
+
   return res
   .status(200)
-  .json(200, req.user, "current user details are here.")
+  .json(new ApiResponse(200, req.user, "user details are here."));
+  
 
-});
+});//done testing 
 
 const updatinguserdetails = asyncHandler(async( req, res ) => {
 
 const {fullname , email} = req.body;
-console.log("provided details by user for update:", req.body);
+console.log("provided details by user for update:", req.body);//done
 
 if(!fullname || !email){
   throw new ApiError(400, "please provide details for updating the details for user.")
@@ -266,6 +280,7 @@ if(!fullname || !email){
 
 const user = User.findByIdAndUpdate(
   req.user?._id,
+  console.log("id of user:", req.user?._id),
   {
     $set: {
       fullname,
@@ -275,12 +290,14 @@ const user = User.findByIdAndUpdate(
   {new: true}
 ).select("-password")//like a new user delete password 
 //console
-console.log("details of user:", user)
+
+console.log("user details after update:", user)
 
 return res
 .status(200)
-.json(new ApiResponse(201, "New details are updated for user."))
-});
+.json(new ApiResponse(201, user,"New details are updated for user."))
+
+});//pending
 
 const updateavatar = asyncHandler(async(req, res) => {
   
@@ -350,4 +367,5 @@ export {
   updatinguserdetails,
   updateavatar,
   updatecoverimage,
+
 }
